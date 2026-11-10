@@ -1,0 +1,8 @@
+# greenhouse:<slug> or lever:<slug>. The slug is in the company's job URL.
+# Wrong slugs are skipped silently. Add as many as you like.
+greenhouse:cloudflare
+greenhouse:datadog
+greenhouse:elastic
+greenhouse:databricks
+greenhouse:coinbase
+lever:cred
