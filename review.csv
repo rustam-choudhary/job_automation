@@ -1,3 +1,4 @@
 time,url,status,note
 2026-11-10T20:29:31,https://to.indeed.com/aacprr4kp42j,DRY_RUN,"form filled, not submitted"
 2026-11-10T20:42:04,https://www.coinbase.com/careers/positions/8054055?gh_jid=8054055,DRY_RUN,"form filled, not submitted"
+2026-11-10T21:46:49,https://www.coinbase.com/careers/positions/8054055?gh_jid=8054055,REVIEW,no form fields found (embedded form or login)
