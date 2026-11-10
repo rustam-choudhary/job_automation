@@ -90,6 +90,10 @@ def apply(page, url):
     if unfilled:
         return "REVIEW", "required fields not filled: " + ", ".join(unfilled[:6])
     if DRY_RUN:
+        shots = BASE / "shots"
+        shots.mkdir(exist_ok=True)
+        name = re.sub(r"\W+", "_", url)[-60:]
+        page.screenshot(path=str(shots / f"{name}.png"), full_page=True)
         return "DRY_RUN", "form filled, not submitted"
     submit = page.get_by_role("button", name=re.compile(r"submit|send application", re.I)).first
     if not submit.count():
