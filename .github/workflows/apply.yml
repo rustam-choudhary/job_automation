@@ -1,0 +1,37 @@
+name: job-apply
+
+on:
+  schedule:
+    # 9:00, 13:00, 17:00, 21:00 IST = 03:30, 07:30, 11:30, 15:30 UTC
+    - cron: "30 3,7,11,15 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install playwright pyyaml
+          playwright install --with-deps chromium
+
+      - name: Run applier
+        run: python apply.py
+
+      - name: Save progress (so links aren't repeated)
+        run: |
+          git config user.name "job-bot"
+          git config user.email "job-bot@users.noreply.github.com"
+          git add done.txt review.csv || true
+          git commit -m "update run log" || echo "nothing to commit"
+          git push
