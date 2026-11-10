@@ -25,13 +25,18 @@ jobs:
           pip install playwright pyyaml
           playwright install --with-deps chromium
 
+      - name: Find new jobs
+        run: python discover.py
+
       - name: Run applier
+        env:
+          DRY_RUN: "true"      # change to "false" to really submit
         run: python apply.py
 
-      - name: Save progress (so links aren't repeated)
+      - name: Save progress
         run: |
           git config user.name "job-bot"
           git config user.email "job-bot@users.noreply.github.com"
-          git add done.txt review.csv || true
+          git add done.txt review.csv links.txt || true
           git commit -m "update run log" || echo "nothing to commit"
           git push
