@@ -8,11 +8,12 @@ unknown required field) is logged to review.csv for you to finish by hand.
 """
 import csv, datetime, pathlib, re, sys
 import yaml
+import os
 from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
 
 BASE = pathlib.Path(__file__).parent
 HEADLESS = True
-DRY_RUN = True          # True = fill but never click submit. Flip to False when happy.
+DRY_RUN = os.environ.get("DRY_RUN", "true").lower() != "false"
 MAX_PER_RUN = 10
 
 profile = yaml.safe_load((BASE / "profile.yaml").read_text())
@@ -94,8 +95,12 @@ def apply(page, url):
     if not submit.count():
         return "REVIEW", "no submit button found"
     submit.click()
-    page.wait_for_timeout(3000)
-    return "APPLIED", "submitted"
+    page.wait_for_timeout(5000)
+    text = page.inner_text("body").lower()
+    if any(w in text for w in ["thank you", "application has been submitted",
+                               "application submitted", "received your application"]):
+        return "APPLIED", "confirmed"
+    return "REVIEW", "clicked submit but no confirmation seen"
 
 def main():
     links_file, done_file = BASE / "links.txt", BASE / "done.txt"
